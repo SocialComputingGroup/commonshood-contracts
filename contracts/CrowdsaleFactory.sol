@@ -21,11 +21,12 @@ contract CrowdsaleFactory {
         address owner;
     }
 
-    mapping(string => CrowdsaleData) internal crowdsales;
+    mapping(address => CrowdsaleData) internal crowdsalesDataByAddress;
+    address[] internal crowdsalesAddresses;
+    mapping(address => address[]) crowdsalesByOwner; //here the key is the owner of the crowdsales
     mapping(address => bool) internal isAdmin;
 
     event CrowdsaleAdded(
-        string indexed _id,
         address indexed _from,
         uint256 _timestamp,
         address _contractAddress,
@@ -54,13 +55,29 @@ contract CrowdsaleFactory {
         emit AdminAdded(msg.sender, _address);
     }
 
+
+    /**
+     * @return an array of addresses containing the addresses of all crowdsales created
+     *          by this factory
+     */
+    function getAllCrowdsalesAddresses() public view returns(address[] memory){
+        return crowdsalesAddresses;
+    }
+
+    /**
+     * @param _owner the owner of some crowdsale created via this CrowdsaleFactory
+     * @return an array of addresses of TokenCrowdsales owned by _owner
+     */
+    function getCrowdsalesByOwner(address _owner) public view returns(address[] memory){
+        return crowdsalesByOwner[_owner];
+    }
+
     /**
      * @dev getCrowdsale gets the crowdsale from its ID.
-     * @param id the crowdsale ID.
+     * @param crowdsaleAddress the crowdsale address.
      * @return the full data of the crowdsale.
      */
-    function getCrowdSale(
-        string memory id
+    function getCrowdSale( address crowdsaleAddress
     ) public view returns(
         address,
         TokenTemplate,
@@ -72,7 +89,7 @@ contract CrowdsaleFactory {
         uint256,
         address
     ){
-        CrowdsaleData storage crowdsale = crowdsales[id];
+        CrowdsaleData storage crowdsale = crowdsalesDataByAddress[crowdsaleAddress];
         return (
             crowdsale.crowdsaleContract,
             crowdsale.tokenToGive,
@@ -88,7 +105,6 @@ contract CrowdsaleFactory {
 
     /**
      * @dev createCrowdsale creates a new crowdsale.
-     * @param _crowdsaleID the crowdsale ID, must be unique.
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
      * @param _start the start time of the crowdsale.
@@ -99,7 +115,6 @@ contract CrowdsaleFactory {
      * @return the address of the created crowdsale.
      */
     function createCrowdsale(
-        string memory _crowdsaleID,
         address _tokenToGive,
         address _tokenToAccept,
         uint256 _start,
@@ -131,12 +146,17 @@ contract CrowdsaleFactory {
             owner: msg.sender
         });
 
-        crowdsales[_crowdsaleID] = tempData;
+        crowdsalesDataByAddress[crowdsaleAddr] = tempData;
+        crowdsalesAddresses.push(crowdsaleAddr);
+        //updating list of crowdsales owned by msg.sender:
+        address[] storage ownedCrowdsales = crowdsalesByOwner[msg.sender];
+        ownedCrowdsales.push(crowdsaleAddr);
+        crowdsalesByOwner[msg.sender] = ownedCrowdsales;
+
 
         emit CrowdsaleAdded(
-            _crowdsaleID,
             msg.sender,
-            now,
+            now, // no security concern for us (see documentation on why tou shouldn't use it if you need time to be precise within 90 seconds)
             crowdsaleAddr,
             _start,
             _end,
@@ -151,34 +171,34 @@ contract CrowdsaleFactory {
 
     /**
      * @dev unlockCrowdsale unlocks the crowdsale if requirements are met.
-     * @param _id the id of the crowdsale.
+     * @param crowdsalesAddress the address of the crowdsale.
      */
     function unlockCrowdsale(
-        string memory _id
+        address crowdsalesAddress
     ) public {
-        (TokenCrowdsale)(crowdsales[_id].crowdsaleContract).unlockCrowdsale();
+        TokenCrowdsale(crowdsalesAddress).unlockCrowdsale();
     }
 
     /**
      * @dev stopCrowdsale sets the crowdsale as Stopped.
-     * @param _id the id of the crowdsale.
+     * @param crowdsalesAddress the address of the crowdsale.
      */
     function stopCrowdsale(
-        string memory _id
+        address crowdsalesAddress
     ) public {
-        (TokenCrowdsale)(crowdsales[_id].crowdsaleContract).stopCrowdsale();
+        TokenCrowdsale(crowdsalesAddress).stopCrowdsale();
     }
 
     /**
      * @dev joinCrowdsale allows the user to contribute by the specified amount of TokenToGive,
      *      if it passes the checks.
-     * @param _id the id of the crowdsale.
+     * @param crowdsalesAddress the address of the crowdsale.
      * @param _amount the amount of TokenToAccept to join the crowdsale with.
      */
     function joinCrowdsale(
-        string memory _id,
+        address crowdsalesAddress,
         uint256 _amount
     ) public {
-        (TokenCrowdsale)(crowdsales[_id].crowdsaleContract).joinCrowdsale(_amount);
+        TokenCrowdsale(crowdsalesAddress).joinCrowdsale(_amount);
     }
 }
