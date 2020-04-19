@@ -5,7 +5,16 @@ import "./TokenTemplate.sol";
 import "./CrowdsaleFactory.sol";
 
 /**
- * @title CcDAO represents a DAO in Cocity ecosystem.
+ * @dev Implementation of a DAO (Decentralized Autonomous Organization) for the CommonsHood app.
+ *
+ * This implementation consists in an organization that have an owner and various members with
+ * various roles. The organization is capable of issuing tokens (ERC20 compliant) or Crowdsales.
+ * Tokens can be transfered to others accounts or others DAOs. Only members with a role grater
+ * than or equal to ROLE_ADMIN can issue new tokens and crowdsales.
+ *
+ * Users can join the DAO with the role ROLE_MEMBER. They can be promoted to higher roles only by a
+ * ROLE_ADMIN or a ROLE_OWNER. All writing operations can be performed only by users with ROLE_ADMIN
+ * or higher.
  */
 contract CcDAO {
     address public creator;
@@ -81,7 +90,7 @@ contract CcDAO {
         roles[_member] = role;
     }
 
-/**
+    /**
      * @dev promote allows a member to demote a lower-in-grade member to a specified higher role.
      * @param _member the address of the member to demote.
      * @param role the destination role of the demoted member, must be higher than actual role.
@@ -136,6 +145,7 @@ contract CcDAO {
         uint256 _hardCap,
         bytes32 _contractHash
         ) public {
+        require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can issue new tokens");
         tokenFactory.createToken(_name, _symbol, 0, _logoURL, _logoHash, _hardCap, _contractHash);
     }
 
@@ -162,6 +172,7 @@ contract CcDAO {
         (tokenGiveAddr, , , , , , ) = tokenFactory.getToken(_tokenToGive);
         (tokenAcceptAddr, , , , , , ) = tokenFactory.getToken(_tokenToAccept);
 
+        require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can create new crowdsales");
         require(tokenGiveAddr != address(0), "Must be a valid TokenToGive address");
         require(tokenAcceptAddr != address(0), "Must be a valid TokenToAccept address");
 
@@ -175,6 +186,7 @@ contract CcDAO {
     function unlockCrowdsale(
         address crowdsaleAddress
     ) public {
+        require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can unlock crowdsales");
         crowdsaleFactory.unlockCrowdsale(crowdsaleAddress);
     }
 
@@ -185,11 +197,12 @@ contract CcDAO {
     function stopCrowdsale(
         address crowdsaleAddress
     ) public {
+        require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can stop crowdsales");
         crowdsaleFactory.stopCrowdsale(crowdsaleAddress);
     }
 
     /**
-     * @dev joinCrowdsale allows the user to contribute by the specified amount of TokenToGive,
+     * @dev joinCrowdsale allows the DAO to contribute by the specified amount of TokenToGive,
      *      if it passes the checks.
      * @param crowdsaleAddress the address of the crowdsale.
      * @param _amount the amount of TokenToAccept to join the crowdsale with.
@@ -198,6 +211,7 @@ contract CcDAO {
         address crowdsaleAddress,
         uint256 _amount
     ) public {
+        require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can let the DAO join crowdsales");
         crowdsaleFactory.joinCrowdsale(crowdsaleAddress, _amount);
     }
 }

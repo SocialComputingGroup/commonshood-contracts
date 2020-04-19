@@ -2,11 +2,15 @@ pragma solidity ^0.5.0;
 
 import "./TokenCrowdsale.sol";
 import "./TokenTemplate.sol";
-import "./TokenCrowdsale.sol";
 
 /**
- * @title CrowdsaleFactory is a contract following Factory
- *        Pattern to generate crowdsales.
+ * @dev CrowdsaleFactory is a contract following Factory Pattern to generate crowdsales.
+ *
+ * This contract allows users to create a new Crowdsale that accepts an ERC20 compliant token
+ * and returns, when the requirements are met, another token. There is an acceptRatio that
+ * defines the minimum unit of token accepted, and each increment should be a multiple of
+ * that ratio; there is also a giveRatio that is the unit of token that will be distributed
+ * for each increment of acceptRatio.
  */
 contract CrowdsaleFactory {
     struct CrowdsaleData {
