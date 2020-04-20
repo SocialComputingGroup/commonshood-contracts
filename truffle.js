@@ -11,12 +11,12 @@ module.exports = {
       port: 7545,
       network_id: "5777"
     },
-    cceth: {
-      host: "cceth.di.unito.it",
-      port: 8545,
+    hackathon: {
+      host: "194.116.76.10",
+      port: 8540,
       network_id: 456719,
-      from: "0x007ccffb7916f37f7aeef05e8096ecfbe55afc2f",
-      gas: 4612388
+      from: "0xbAAfa3f6438a0ea1E264b1D008913189b392f730",// insert your address here in order to make transaction on hackathon chain
+      gasPrice: 0
     },
     rinkeby: {
       host: "localhost", // needs geth running on rinkeby
