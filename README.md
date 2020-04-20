@@ -40,6 +40,7 @@ Once the environment set up is completed the contracts can be compiled with the 
 # ./node_modules/.bin/truffle compile
 ```
 Once the compilation is completed the compiled contracts will be available inside the `build/contracts` directory.
+`NOTE: If the contracts are modified be sure that the solidity version matches the compiler one`
 
 # Deploying the contracts
 Once that the contracts are built it is time to deploy them on a chain. In order to do so it necessary to execute the following command:
