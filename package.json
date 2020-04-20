@@ -10,7 +10,7 @@
     "web3": "^1.0.0-beta2"
   },
   "devDependencies": {
-    "openzeppelin-solidity": "^2.1.0",
+    "openzeppelin-solidity": "^2.1.2",
     "truffle": "^5.0.2"
   },
   "scripts": {
