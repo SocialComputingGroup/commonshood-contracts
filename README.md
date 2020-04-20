@@ -1,7 +1,7 @@
 # Smart Contracts repository
 This repository contains all smart contracts for the Commonshood DAPP project
 
-### Pattern used
+## Pattern used
 The main pattern here is the contract factory pattern and it works as follows:
 
 There is a **Product** and a **Factory** contract, based on the *Factory Pattern* model.
@@ -31,5 +31,29 @@ The [Crowdsale Factory](./contracts/CrowdsaleFactory.sol) contract allows users 
 ## DAO Factory
 The [DAO Factory](./contracts/DAOFactory.sol) allows users to create a new DAO. The function that creates a new DAO requires a TokenFactory and a CrowdsaleFactory address in order to allow the DAO to issue new tokens or create new crowdsales.
 
+# Installing the environment
+Before using truffle you should install all the required libraries with `npm install` command.
+
+# Compiling the contracts
+Once the environment set up is completed the contracts can be compiled with the following command:
+```bash
+# ./node_modules/.bin/truffle compile
+```
+Once the compilation is completed the compiled contracts will be available inside the `build/contracts` directory.
+
+# Deploying the contracts
+Once that the contracts are built it is time to deploy them on a chain. In order to do so it necessary to execute the following command:
+```bash
+# ./node_modules/.bin/truffle deploy --network <INSERT_YOUR_NETWORK_NAME>
+```
+Substitute `<INSERT_YOUR_NETWORK_NAME>` with the name of the desired network as configured in `truffle.js` file.
+
 ### Additional notes
 This repository follows the truffle model, and it has been created to be used with truffle and ganache on local development, while testnet configuration skeletons can be provided later but require a wallet to be setup and a passphrase to be set and shared among developers.
+
+### ABIs Extractor
+For a simple ABI extraction process a basic node.js program is provided. Such program can be found with the name `ABIExtractor.js` and can be executed with:
+```bash
+# node ABIExtractor.js
+```
+`BE CAREFUL: build the contracts before running this program in order to avoid errors`
