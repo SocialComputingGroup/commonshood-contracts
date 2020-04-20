@@ -151,7 +151,6 @@ contract CcDAO {
 
     /**
      * @dev createCrowdsale creates a new crowdsale.
-     * @param _crowdsaleID the crowdsale ID, must be unique.
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
      * @param _start the start time of the crowdsale.
@@ -162,7 +161,6 @@ contract CcDAO {
      * @return the address of the created crowdsale.
      */
     function createCrowdsale(
-        string memory _crowdsaleID,
         string memory _tokenToGive,
         string memory _tokenToAccept,
         uint256 _start, uint256 _end,
@@ -178,42 +176,42 @@ contract CcDAO {
         require(tokenGiveAddr != address(0), "Must be a valid TokenToGive address");
         require(tokenAcceptAddr != address(0), "Must be a valid TokenToAccept address");
 
-        crowdsaleFactory.createCrowdsale(_crowdsaleID, tokenGiveAddr, tokenAcceptAddr, _start, _end, _acceptRatio, _giveRatio, _maxCap);
+        crowdsaleFactory.createCrowdsale(tokenGiveAddr, tokenAcceptAddr, _start, _end, _acceptRatio, _giveRatio, _maxCap);
     }
 
     /**
      * @dev unlockCrowdsale unlocks the crowdsale if requirements are met.
-     * @param _crowdsaleID the id of the crowdsale.
+     * @param crowdsaleAddress the address of the crowdsale.
      */
     function unlockCrowdsale(
-        string memory _crowdsaleID
+        address crowdsaleAddress
     ) public {
         require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can unlock crowdsales");
-        crowdsaleFactory.unlockCrowdsale(_crowdsaleID);
+        crowdsaleFactory.unlockCrowdsale(crowdsaleAddress);
     }
 
     /**
      * @dev stopCrowdsale sets the crowdsale as Stopped.
-     * @param _crowdsaleID the id of the crowdsale.
+     * @param crowdsaleAddress the address of the crowdsale.
      */
     function stopCrowdsale(
-        string memory _crowdsaleID
+        address crowdsaleAddress
     ) public {
         require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can stop crowdsales");
-        crowdsaleFactory.stopCrowdsale(_crowdsaleID);
+        crowdsaleFactory.stopCrowdsale(crowdsaleAddress);
     }
 
     /**
      * @dev joinCrowdsale allows the DAO to contribute by the specified amount of TokenToGive,
      *      if it passes the checks.
-     * @param _crowdsaleID the id of the crowdsale.
+     * @param crowdsaleAddress the address of the crowdsale.
      * @param _amount the amount of TokenToAccept to join the crowdsale with.
      */
     function joinCrowdsale(
-        string memory _crowdsaleID,
+        address crowdsaleAddress,
         uint256 _amount
     ) public {
         require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can let the DAO join crowdsales");
-        crowdsaleFactory.joinCrowdsale(_crowdsaleID, _amount);
+        crowdsaleFactory.joinCrowdsale(crowdsaleAddress, _amount);
     }
 }
