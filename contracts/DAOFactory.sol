@@ -3,8 +3,11 @@ pragma solidity ^0.5.0;
 import "./CcDAO.sol";
 
 /**
- * @title DAOFactory is a contract following Factory
- *        Pattern to generate CcDAOs.
+ * @dev DAOFactory is a contract following Factory Pattern to generate CcDAOs.
+ *
+ * This contract allows users to create a new DAO. The function that creates
+ * a new DAO requires a TokenFactory and a CrowdsaleFactory address in order
+ * to allow the DAO to issue new tokens or create new crowdsales.
  */
 contract DAOFactory {
     mapping(string => CcDAO) internal daos;
@@ -39,7 +42,7 @@ contract DAOFactory {
     /**
      * @dev createDAO creates a new DAO.
      * @param _name the name of the DAO.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      * @param _tokenFactory the deployed TokenFactory instance.
      * @param _crowdsaleFactory the deployed CrowdsaleFactory intance.
      */
@@ -62,7 +65,7 @@ contract DAOFactory {
 
     /**
      * @dev getDAO returns a DAO address by firstlife place ID.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      * @return the address of the DAO.
      */
     function getDAO(string memory _firstlifePlaceID) public view returns(address) {
@@ -71,7 +74,7 @@ contract DAOFactory {
 
     /**
      * @dev createToken creates a new TokenTemplate instance.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      * @param _name the name of the Token
      * @param _symbol the symbol of the Token.
      * @param _logoURL the URL of the image representing the logo of the Token.
@@ -88,13 +91,13 @@ contract DAOFactory {
         uint256 _hardCap,
         bytes32 _contractHash
     ) public {
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can issue tokens from the factory")
         daos[_firstlifePlaceID].createToken(_name, _symbol, _logoURL, _logoHash, _hardCap, _contractHash);
     }
 
     /**
      * @dev createCrowdsale creates a new crowdsale.
-     * @param _crowdsaleID the crowdsale ID, must be unique.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
      * @param _start the start time of the crowdsale.
@@ -105,7 +108,6 @@ contract DAOFactory {
      * @return the address of the created crowdsale.
      */
     function createCrowdsale(
-        string memory _crowdsaleID,
         string memory _firstlifePlaceID,
         string memory _tokenToGive,
         string memory _tokenToAccept,
@@ -115,30 +117,33 @@ contract DAOFactory {
         uint8 _giveRatio,
         uint _maxCap
     ) public {
-        daos[_firstlifePlaceID].createCrowdsale(_crowdsaleID, _tokenToGive, _tokenToAccept, _start, _end, _acceptRatio, _giveRatio, _maxCap);
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can create crowdsales from the factory")
+        daos[_firstlifePlaceID].createCrowdsale(_tokenToGive, _tokenToAccept, _start, _end, _acceptRatio, _giveRatio, _maxCap);
     }
 
     /**
      * @dev unlockCrowdsale unlocks the crowdsale if requirements are met.
-     * @param _crowdsaleID the id of the crowdsale.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param crowdsaleAddress the address of the crowdsale.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      */
     function unlockCrowdsale(
-        string memory _crowdsaleID,
+        address crowdsaleAddress,
         string memory _firstlifePlaceID
     ) public {
-        daos[_firstlifePlaceID].unlockCrowdsale(_crowdsaleID);
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can unlock crowdsales from the factory")
+        daos[_firstlifePlaceID].unlockCrowdsale(crowdsaleAddress);
     }
 
     /**
      * @dev stopCrowdsale sets the crowdsale as Stopped.
-     * @param _crowdsaleID the id of the crowdsale.
-     * @param _firstlifePlaceID the placeID on Firstlife database.
+     * @param crowdsaleAddress the address of the crowdsale.
+     * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      */
     function stopCrowdsale(
-        string memory _crowdsaleID,
+        address crowdsaleAddress,
         string memory _firstlifePlaceID
     ) public {
-        daos[_firstlifePlaceID].stopCrowdsale(_crowdsaleID);
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can stop crowdsales from the factory")
+        daos[_firstlifePlaceID].stopCrowdsale(crowdsaleAddress);
     }
 }
