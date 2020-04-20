@@ -91,7 +91,7 @@ contract DAOFactory {
         uint256 _hardCap,
         bytes32 _contractHash
     ) public {
-        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can issue tokens from the factory")
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can issue tokens from the factory");
         daos[_firstlifePlaceID].createToken(_name, _symbol, _logoURL, _logoHash, _hardCap, _contractHash);
     }
 
@@ -117,7 +117,7 @@ contract DAOFactory {
         uint8 _giveRatio,
         uint _maxCap
     ) public {
-        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can create crowdsales from the factory")
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can create crowdsales from the factory");
         daos[_firstlifePlaceID].createCrowdsale(_tokenToGive, _tokenToAccept, _start, _end, _acceptRatio, _giveRatio, _maxCap);
     }
 
@@ -130,7 +130,7 @@ contract DAOFactory {
         address crowdsaleAddress,
         string memory _firstlifePlaceID
     ) public {
-        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can unlock crowdsales from the factory")
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can unlock crowdsales from the factory");
         daos[_firstlifePlaceID].unlockCrowdsale(crowdsaleAddress);
     }
 
@@ -143,7 +143,7 @@ contract DAOFactory {
         address crowdsaleAddress,
         string memory _firstlifePlaceID
     ) public {
-        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can stop crowdsales from the factory")
+        require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can stop crowdsales from the factory");
         daos[_firstlifePlaceID].stopCrowdsale(crowdsaleAddress);
     }
 }

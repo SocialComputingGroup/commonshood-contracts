@@ -180,7 +180,8 @@ contract CrowdsaleFactory {
     function unlockCrowdsale(
         address crowdsalesAddress
     ) public {
-        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender, "Only Crowdsale creator can unlock crowdsales from the factory")
+        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender,
+        "Only Crowdsale creator can unlock crowdsales from the factory");
         TokenCrowdsale(crowdsalesAddress).unlockCrowdsale();
     }
 
@@ -191,7 +192,8 @@ contract CrowdsaleFactory {
     function stopCrowdsale(
         address crowdsalesAddress
     ) public {
-        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender, "Only Crowdsale creator can stop crowdsales from the factory")
+        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender,
+        "Only Crowdsale creator can stop crowdsales from the factory");
         TokenCrowdsale(crowdsalesAddress).stopCrowdsale();
     }
 
