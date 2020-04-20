@@ -11,13 +11,6 @@ module.exports = {
       port: 7545,
       network_id: "5777"
     },
-    cceth: {
-      host: "cceth.di.unito.it",
-      port: 8545,
-      network_id: 456719,
-      from: "0x007ccffb7916f37f7aeef05e8096ecfbe55afc2f",
-      gas: 4612388
-    },
     rinkeby: {
       host: "localhost", // needs geth running on rinkeby
       port: 8545,
