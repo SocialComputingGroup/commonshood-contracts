@@ -155,9 +155,9 @@ contract TokenFactory {
         string memory _symbol,
         uint8 _decimals,
         string memory _logoURL,
-        bytes32 _logoHash,
+        string memory _logoHash,
         uint256 _hardCap,
-        bytes32 _contractHash
+        string memory _contractHash
     ) public {
         // symbol must not be already be created for this token, since it's unique,
         // so we check for 0 value struct (with 0 value contract address).

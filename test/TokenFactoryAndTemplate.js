@@ -9,12 +9,8 @@ contract("TokenFactory", async accounts => {
       decimals: 18,
       logoURL:
         "https://apollo-uploads-las.s3.amazonaws.com/1442324623/atlanta-hawks-logo-944556.png",
-      logoHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ), // sha256 hash
-      contractHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
+      logoHash:"logoHash",
+      contractHash: "contractHash",
       supply: 0
     },
     mintableToken2 = {
@@ -23,12 +19,8 @@ contract("TokenFactory", async accounts => {
       decimals: 2,
       logoURL:
         "https://apollo-uploads-las.s3.amazonaws.com/1442324623/atlanta-hawks-logo-944556.png",
-      logoHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ), // sha256 hash
-      contractHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
+      logoHash: "logoHash",
+      contractHash: "contractHash",
       supply: 5000
     },
     cappedToken = {
@@ -37,12 +29,8 @@ contract("TokenFactory", async accounts => {
       decimals: 18,
       logoURL:
         "https://apollo-uploads-las.s3.amazonaws.com/1442324623/atlanta-hawks-logo-944556.png",
-      logoHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
-      contractHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
+      logoHash: "logoHash",
+      contractHash: "contractHash",
       supply: 100
     },
     cappedToken2 ={
@@ -51,12 +39,8 @@ contract("TokenFactory", async accounts => {
       decimals: 2,
       logoURL:
         "https://apollo-uploads-las.s3.amazonaws.com/1442324623/atlanta-hawks-logo-944556.png",
-      logoHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
-      contractHash: web3.utils.toHex(
-        "0x4D021B157A49F472A48AB02A1F2F6E2986C169A7C78CC94179EDAEBD5E96E8E4"
-      ),
+      logoHash: "logoHash",
+      contractHash: "contractHash",
       supply: 1800
     };
 

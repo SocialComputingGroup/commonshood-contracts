@@ -141,9 +141,9 @@ contract CcDAO {
         string memory _name,
         string memory _symbol,
         string memory _logoURL,
-        bytes32 _logoHash,
+        string memory _logoHash,
         uint256 _hardCap,
-        bytes32 _contractHash
+        string memory _contractHash
         ) public {
         require(roles[msg.sender] >= ROLE_ADMIN, "Only admins or higher roles can issue new tokens");
         tokenFactory.createToken(_name, _symbol, 0, _logoURL, _logoHash, _hardCap, _contractHash);

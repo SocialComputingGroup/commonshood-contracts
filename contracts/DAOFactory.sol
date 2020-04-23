@@ -87,9 +87,9 @@ contract DAOFactory {
         string memory _name,
         string memory _symbol,
         string memory _logoURL,
-        bytes32 _logoHash,
+        string memory _logoHash,
         uint256 _hardCap,
-        bytes32 _contractHash
+        string memory _contractHash
     ) public {
         require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can issue tokens from the factory");
         daos[_firstlifePlaceID].createToken(_name, _symbol, _logoURL, _logoHash, _hardCap, _contractHash);

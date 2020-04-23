@@ -12,9 +12,10 @@ import "./TokenFactory.sol";
 contract TokenTemplate is ERC20Detailed, ERC20Mintable {
     event Debug(string _message);
 
+    address private _owner;
     string private _logoURL;
-    bytes32 private _logoHash;
-    bytes32 private _contractHash;
+    string private _logoHash;
+    string private _contractHash;
     TokenFactory private _tokenFactory;
 
     constructor(
@@ -22,10 +23,10 @@ contract TokenTemplate is ERC20Detailed, ERC20Mintable {
         string memory symbol,
         uint8 decimals,
         string memory logoURL,
-        bytes32 logoHash,
+        string memory logoHash,
         uint256 totalSupply,
         address owner,
-        bytes32 contractHash,
+        string memory contractHash,
         address tokenFactoryAddress
     ) ERC20Detailed(name, symbol, decimals) ERC20Mintable() public {
         require(owner != address(0), "Owner must be defined");
@@ -36,6 +37,7 @@ contract TokenTemplate is ERC20Detailed, ERC20Mintable {
             _removeMinter(owner);
         }
 
+        _owner = owner;
         _contractHash = contractHash;
         _logoHash = logoHash;
         _tokenFactory = TokenFactory(tokenFactoryAddress);
@@ -60,15 +62,22 @@ contract TokenTemplate is ERC20Detailed, ERC20Mintable {
     /**
      * @return The hash of the logo of the token.
      */
-    function logoHash() public view returns(bytes32) {
+    function logoHash() public view returns(string memory) {
         return _logoHash;
     }
 
     /**
      * @return The hash of the PDF contract of the Token.
      */
-    function contractHash() public view returns(bytes32) {
+    function contractHash() public view returns(string memory) {
         return _contractHash;
     }
+
+    /**
+     * @return The address of the owner of the coin
+     */
+     function owner() public view returns(address){
+        return _owner;
+     }
 
 }
