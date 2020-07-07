@@ -1,6 +1,8 @@
 # Smart Contracts repository
 This repository contains all smart contracts for the Commonshood DAPP project
 
+**WARNING**: at the moment the whole DAOFactory and CcDAO is under a rewrite effort and it's not tested at all. Don't assume it works
+
 ## Pattern used
 The main pattern here is the contract factory pattern and it works as follows:
 

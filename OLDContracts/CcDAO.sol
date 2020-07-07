@@ -151,6 +151,10 @@ contract CcDAO {
 
     /**
      * @dev createCrowdsale creates a new crowdsale.
+     * @param _title the title of the crowdsale
+     * @param _description a short description
+     * @param _logoHash the hash of the logo of the crowdsale loaded in a external server
+     * @param _TOSHash the hash of the TOS file of the crowdsale loaded in a external server
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
      * @param _start the start time of the crowdsale.
@@ -161,6 +165,10 @@ contract CcDAO {
      * @return the address of the created crowdsale.
      */
     function createCrowdsale(
+        string memory _title,
+        string memory _description,
+        string memory _logoHash,
+        string memory _TOSHash,
         string memory _tokenToGive,
         string memory _tokenToAccept,
         uint256 _start, uint256 _end,
@@ -176,7 +184,20 @@ contract CcDAO {
         require(tokenGiveAddr != address(0), "Must be a valid TokenToGive address");
         require(tokenAcceptAddr != address(0), "Must be a valid TokenToAccept address");
 
-        crowdsaleFactory.createCrowdsale(tokenGiveAddr, tokenAcceptAddr, _start, _end, _acceptRatio, _giveRatio, _maxCap);
+        crowdsaleFactory.createCrowdsale(
+            _title,
+            _description,
+            _logoHash,
+            _TOSHash,
+            tokenGiveAddr,
+            tokenAcceptAddr,
+            _start,
+            _end,
+            _acceptRatio,
+            _giveRatio,
+            _maxCap
+        );
+
     }
 
     /**

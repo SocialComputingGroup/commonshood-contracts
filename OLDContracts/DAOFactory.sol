@@ -97,6 +97,10 @@ contract DAOFactory {
 
     /**
      * @dev createCrowdsale creates a new crowdsale.
+     * @param _title the title of the crowdsale
+     * @param _description a short description
+     * @param _logoHash the hash of the logo of the crowdsale loaded in a external server
+     * @param _TOSHash the hash of the TOS file of the crowdsale loaded in a external server
      * @param _firstlifePlaceID the placeID that identifies the DAO on Firstlife database.
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
@@ -109,6 +113,10 @@ contract DAOFactory {
      */
     function createCrowdsale(
         string memory _firstlifePlaceID,
+        string memory _title,
+        string memory _description,
+        string memory _logoHash,
+        string memory _TOSHash,
         string memory _tokenToGive,
         string memory _tokenToAccept,
         uint _start,
@@ -118,7 +126,19 @@ contract DAOFactory {
         uint _maxCap
     ) public {
         require(address(daos[_firstlifePlaceID].creator) == msg.sender, "Only DAO creator can create crowdsales from the factory");
-        daos[_firstlifePlaceID].createCrowdsale(_tokenToGive, _tokenToAccept, _start, _end, _acceptRatio, _giveRatio, _maxCap);
+        daos[_firstlifePlaceID].createCrowdsale(
+            _title,
+            _description,
+            _logoHash,
+            _TOSHash,
+            _tokenToGive,
+            _tokenToAccept,
+            _start,
+            _end,
+            _acceptRatio,
+            _giveRatio,
+            _maxCap
+        );
     }
 
     /**
