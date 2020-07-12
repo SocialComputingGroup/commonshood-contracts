@@ -24,8 +24,8 @@ contract CrowdsaleFactory {
         address _contractAddress,
         uint256 _start,
         uint256 _end,
-        uint8 _acceptRatio,
-        uint8 _giveRatio,
+        uint256 _acceptRatio,
+        uint256 _giveRatio,
         uint256 _maxCap,
         address owner
     );
@@ -81,8 +81,8 @@ contract CrowdsaleFactory {
         address _tokenToAccept,
         uint256 _start,
         uint256 _end,
-        uint8 _acceptRatio,
-        uint8 _giveRatio,
+        uint256 _acceptRatio,
+        uint256 _giveRatio,
         uint256 _maxCap,
         string[] memory metadata
         ) public returns(address) {

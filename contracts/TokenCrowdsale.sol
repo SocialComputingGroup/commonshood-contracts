@@ -22,8 +22,8 @@ contract TokenCrowdsale {
     uint256 public start;
     uint256 public end;
 
-    uint8 public acceptRatio;
-    uint8 public giveRatio;
+    uint256 public acceptRatio;
+    uint256 public giveRatio;
 
     mapping(address => uint256) internal reservations; // here we save the contributions from each person.
     address[] internal contributors; // the list of contributors.
@@ -45,8 +45,8 @@ contract TokenCrowdsale {
         TokenTemplate _tokenToAccept,
         uint256 _start,
         uint256 _end,
-        uint8 _acceptRatio,
-        uint8 _giveRatio,
+        uint256 _acceptRatio,
+        uint256 _giveRatio,
         uint256 _maxCap,
         address _owner,
         string[] memory metadata
