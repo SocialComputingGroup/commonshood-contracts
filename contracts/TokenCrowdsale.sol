@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
 import "./TokenTemplate.sol";
 
@@ -8,7 +9,12 @@ import "./TokenTemplate.sol";
  */
 contract TokenCrowdsale {
     TokenTemplate tokenToGive; // the crowdsale must own the token for security reasons.
-    TokenTemplate tokenToAccept; // the crowdsale must accept a token as payment. or more than one?
+    TokenTemplate tokenToAccept; // the crowdsale must accept a token as payment.
+
+    string public title;
+    string public description;
+    string public logoHash;
+    string public TOSHash;
 
     address public owner; // the owner of the crowsale.
 
@@ -42,11 +48,17 @@ contract TokenCrowdsale {
         uint8 _acceptRatio,
         uint8 _giveRatio,
         uint256 _maxCap,
-        address _owner
+        address _owner,
+        string[] memory metadata
     ) public {
+        require(metadata.length == 4, "Metadata must be fully populated");
         require(_tokenToGive != _tokenToAccept && (_start < _end || _end == 0), "Parameters should be valid in constructor");
 
         owner = _owner;
+        title = metadata[0];
+        description = metadata[1];
+        logoHash = metadata[2];
+        TOSHash = metadata[3];
         tokenToGive = _tokenToGive;
         tokenToAccept = _tokenToAccept;
         start = _start;

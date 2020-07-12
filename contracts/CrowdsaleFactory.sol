@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
 import "./TokenCrowdsale.sol";
 import "./TokenTemplate.sol";
@@ -13,19 +14,6 @@ import "./TokenTemplate.sol";
  * for each increment of acceptRatio.
  */
 contract CrowdsaleFactory {
-    struct CrowdsaleData {
-        address crowdsaleContract;
-        TokenTemplate tokenToGive;
-        TokenTemplate tokenToAccept;
-        uint256 start;
-        uint256 end;
-        uint8 acceptRatio;
-        uint8 giveRatio;
-        uint256 maxCap;
-        address owner;
-    }
-
-    mapping(address => CrowdsaleData) internal crowdsalesDataByAddress;
     address[] internal crowdsalesAddresses;
     mapping(address => address[]) crowdsalesByOwner; //here the key is the owner of the crowdsales
     mapping(address => bool) internal isAdmin;
@@ -77,37 +65,6 @@ contract CrowdsaleFactory {
     }
 
     /**
-     * @dev getCrowdsale gets the crowdsale from its ID.
-     * @param crowdsaleAddress the crowdsale address.
-     * @return the full data of the crowdsale.
-     */
-    function getCrowdSale( address crowdsaleAddress
-    ) public view returns(
-        address,
-        TokenTemplate,
-        TokenTemplate,
-        uint256,
-        uint256,
-        uint8,
-        uint8,
-        uint256,
-        address
-    ){
-        CrowdsaleData storage crowdsale = crowdsalesDataByAddress[crowdsaleAddress];
-        return (
-            crowdsale.crowdsaleContract,
-            crowdsale.tokenToGive,
-            crowdsale.tokenToAccept,
-            crowdsale.start,
-            crowdsale.end,
-            crowdsale.acceptRatio,
-            crowdsale.giveRatio,
-            crowdsale.maxCap,
-            crowdsale.owner
-        );
-    }
-
-    /**
      * @dev createCrowdsale creates a new crowdsale.
      * @param _tokenToGive the TokenTemplate instance used to give new tokens.
      * @param _tokenToAccept the TokenTemplate instance used to accept contributions.
@@ -116,6 +73,7 @@ contract CrowdsaleFactory {
      * @param _acceptRatio how many tokens to accept in ratio to _giveRatio.
      * @param _giveRatio how many tokens to give in ration to _acceptRatio.
      * @param _maxCap the threshold the TokenToGive tokens are released.
+     * @param metadata a string array containing in order: title, description, logoHash and TOSHash
      * @return the address of the created crowdsale.
      */
     function createCrowdsale(
@@ -125,8 +83,10 @@ contract CrowdsaleFactory {
         uint256 _end,
         uint8 _acceptRatio,
         uint8 _giveRatio,
-        uint256 _maxCap
+        uint256 _maxCap,
+        string[] memory metadata
         ) public returns(address) {
+        require(metadata.length == 4, "Metadata must be fully populated");
         address crowdsaleAddr = address(new TokenCrowdsale(
             TokenTemplate(_tokenToGive),
             TokenTemplate(_tokenToAccept),
@@ -135,22 +95,10 @@ contract CrowdsaleFactory {
             _acceptRatio,
             _giveRatio,
             _maxCap,
-            msg.sender
+            msg.sender,
+            metadata
         ));
 
-        CrowdsaleData memory tempData = CrowdsaleData({
-            crowdsaleContract: crowdsaleAddr,
-            tokenToGive: TokenTemplate(_tokenToGive),
-            tokenToAccept: TokenTemplate(_tokenToAccept),
-            start: _start,
-            end: _end,
-            acceptRatio: _acceptRatio,
-            giveRatio: _giveRatio,
-            maxCap: _maxCap,
-            owner: msg.sender
-        });
-
-        crowdsalesDataByAddress[crowdsaleAddr] = tempData;
         crowdsalesAddresses.push(crowdsaleAddr);
         //updating list of crowdsales owned by msg.sender:
         address[] storage ownedCrowdsales = crowdsalesByOwner[msg.sender];
@@ -180,7 +128,7 @@ contract CrowdsaleFactory {
     function unlockCrowdsale(
         address crowdsalesAddress
     ) public {
-        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender,
+        require(address(TokenCrowdsale(crowdsalesAddress).owner) == msg.sender,
         "Only Crowdsale creator can unlock crowdsales from the factory");
         TokenCrowdsale(crowdsalesAddress).unlockCrowdsale();
     }
@@ -192,7 +140,7 @@ contract CrowdsaleFactory {
     function stopCrowdsale(
         address crowdsalesAddress
     ) public {
-        require(address(crowdsalesDataByAddress[crowdsalesAddress].owner) == msg.sender,
+        require(address(TokenCrowdsale(crowdsalesAddress).owner) == msg.sender,
         "Only Crowdsale creator can stop crowdsales from the factory");
         TokenCrowdsale(crowdsalesAddress).stopCrowdsale();
     }

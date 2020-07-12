@@ -60,11 +60,21 @@ contract("CrowdsaleFactory", async accounts => {
 
   const span = 864000;
 
+  //initialization data
+  const crowdsaleMetadata = [
+    "My Crowdsale Title",
+    "My Crowdsale Description",
+    "5eec64bd5aedd795eacdc1d36dc9699a",
+    "d45f57a1368f621d23da005d1fd7fc85",
+  ];
   const crowdsale = {
+    metadata: crowdsaleMetadata,
     acceptRatio: 1,
     giveRatio: 1,
     maxCap: 100
   };
+  //======================
+
 
   const owner = accounts[0];
   const otherUser = accounts[1];
@@ -113,7 +123,7 @@ contract("CrowdsaleFactory", async accounts => {
         );
         tokenToGiveAddr = transaction.receipt.logs[0].args._contractAddress;
         
-        const {acceptRatio, giveRatio, maxCap } = crowdsale;
+        const {acceptRatio, giveRatio, maxCap, metadata } = crowdsale;
 
         const start = Math.floor(new Date() / 1000);
         //86400000ms === 1day
@@ -127,6 +137,7 @@ contract("CrowdsaleFactory", async accounts => {
           acceptRatio,
           giveRatio,
           maxCap,
+          metadata,
           { from: owner }
         );
         crowdsaleAddress = transaction.receipt.logs[0].args._contractAddress;
@@ -134,6 +145,10 @@ contract("CrowdsaleFactory", async accounts => {
 
         //checking crowdsale data
         const crowdsaleInstance = await TokenCrowdsale.at(crowdsaleAddress);
+        assert.equal(await crowdsaleInstance.title(), metadata[0], "Crowdsale props should be consistent");
+        assert.equal(await crowdsaleInstance.description(), metadata[1], "Crowdsale props should be consistent");
+        assert.equal(await crowdsaleInstance.logoHash(), metadata[2], "Crowdsale props should be consistent");
+        assert.equal(await crowdsaleInstance.TOSHash(), metadata[3], "Crowdsale props should be consistent");
         assert.equal(await crowdsaleInstance.owner(), owner, "Crowdsale props should be consistent");
         assert.equal(await crowdsaleInstance.raised(), 0, "Crowdsale props should be consistent");
         assert.equal(await crowdsaleInstance.acceptRatio(), crowdsale.acceptRatio, "Crowdsale props should be consistent");
@@ -206,7 +221,7 @@ contract("CrowdsaleFactory", async accounts => {
 
     it('Crates multiple crowdsales correctly', async () => {
       const CrowdsaleFactoryInstance = await CrowdsaleFactory.new();
-      const {acceptRatio, giveRatio, maxCap } = crowdsale;
+      const {acceptRatio, giveRatio, maxCap, metadata } = crowdsale;
       const start = Math.floor(new Date() / 1000 - 86400000);//86400000ms === 1day
       const end = Math.floor(new Date() / 1000 - 10000);
        
@@ -217,7 +232,7 @@ contract("CrowdsaleFactory", async accounts => {
       assert.equal(crowdsalesOfUser1.length, 0, "Initially no address is present");
       let crowdsalesOfUser2 = await CrowdsaleFactoryInstance.getCrowdsalesByOwner(otherUser);
       assert.equal(crowdsalesOfUser2.length, 0, "Initially no address is present");
-      
+
       let crowdsalesAddresses = [];
       crowdsalesAddresses.push( await CrowdsaleFactoryInstance.createCrowdsale(
         tokenToGiveAddr,
@@ -227,8 +242,9 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
-        { from: owner }
-      )); //1
+        metadata,
+        { from: owner },
+      ));
       crowdsalesAddresses.push( await CrowdsaleFactoryInstance.createCrowdsale(
         tokenToGiveAddr,
         tokenToAcceptAddr,
@@ -237,8 +253,9 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
-        { from: owner }
-      ));//2
+        metadata,
+        { from: owner },
+      ));
       crowdsalesAddresses.push( await CrowdsaleFactoryInstance.createCrowdsale(
         tokenToGiveAddr,
         tokenToAcceptAddr,
@@ -247,8 +264,9 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
+        metadata,
         { from: otherUser }
-      ));//3, from otherUser
+      ));
       crowdsalesAddresses = crowdsalesAddresses.map( cwd => {
         return cwd.receipt.logs[0].args._contractAddress;
       });
@@ -301,7 +319,7 @@ contract("CrowdsaleFactory", async accounts => {
     it("Trying to join not started yet Crowdsale", async () => {
       //creating crowdsale starting in the future:
       const CrowdsaleFactoryInstance = await CrowdsaleFactory.deployed();
-      const {acceptRatio, giveRatio, maxCap } = crowdsale;
+      const {acceptRatio, giveRatio, maxCap, metadata} = crowdsale;
       const start = Math.floor(new Date() / 1000 + 86400000);//86400000ms === 1day
       const end = Math.floor(new Date() / 1000 + (2*86400000));  
       transaction = await CrowdsaleFactoryInstance.createCrowdsale(
@@ -312,6 +330,7 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
+        metadata,
         { from: owner }
       );
       const futureStartingCrowdsaleAddress = transaction.receipt.logs[0].args._contractAddress;
@@ -340,7 +359,7 @@ contract("CrowdsaleFactory", async accounts => {
     it("Trying to join already ended Crowdsale", async () => {
       //creating crowdsale starting in the future:
       const CrowdsaleFactoryInstance = await CrowdsaleFactory.deployed();
-      const {acceptRatio, giveRatio, maxCap } = crowdsale;
+      const {acceptRatio, giveRatio, maxCap, metadata } = crowdsale;
       const start = Math.floor(new Date() / 1000 - 86400000);//86400000ms === 1day
       const end = Math.floor(new Date() / 1000 - 10000);  
       transaction = await CrowdsaleFactoryInstance.createCrowdsale(
@@ -351,6 +370,7 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
+        metadata,
         { from: owner }
       );
       const alreadyEndedCrowdsaleAddress = transaction.receipt.logs[0].args._contractAddress;
@@ -413,7 +433,7 @@ contract("CrowdsaleFactory", async accounts => {
       );
       tokenToGiveAddr = transaction.receipt.logs[0].args._contractAddress;
       
-      const {acceptRatio, giveRatio, maxCap } = crowdsale;
+      const {acceptRatio, giveRatio, maxCap, metadata } = crowdsale;
 
       const start = Math.floor(new Date() / 1000 - 10000);
       //86400000ms === 1day
@@ -427,6 +447,7 @@ contract("CrowdsaleFactory", async accounts => {
         acceptRatio,
         giveRatio,
         maxCap,
+        metadata,
         { from: owner }
       );
       crowdsaleAddress = transaction.receipt.logs[0].args._contractAddress;
