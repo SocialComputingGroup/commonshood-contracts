@@ -153,7 +153,8 @@ contract("CrowdsaleFactory", async accounts => {
         assert.equal(await crowdsaleInstance.raised(), 0, "Crowdsale props should be consistent");
         assert.equal(await crowdsaleInstance.acceptRatio(), crowdsale.acceptRatio, "Crowdsale props should be consistent");
         assert.equal(await crowdsaleInstance.giveRatio(), crowdsale.giveRatio, "Crowdsale props should be consistent");
-        
+        assert.equal(await crowdsaleInstance.tokenToGiveAddr(), tokenToGiveAddr, "Crowdsale props should be consistent");
+        assert.equal(await crowdsaleInstance.tokenToAcceptAddr(), tokenToAcceptAddr, "Crowdsale props should be consistent");
 
       } catch (error) {
         assertFailError(error);

@@ -11,6 +11,9 @@ contract TokenCrowdsale {
     TokenTemplate tokenToGive; // the crowdsale must own the token for security reasons.
     TokenTemplate tokenToAccept; // the crowdsale must accept a token as payment.
 
+    address public tokenToGiveAddr;
+    address public tokenToAcceptAddr;
+
     string public title;
     string public description;
     string public logoHash;
@@ -61,6 +64,8 @@ contract TokenCrowdsale {
         TOSHash = metadata[3];
         tokenToGive = _tokenToGive;
         tokenToAccept = _tokenToAccept;
+        tokenToGiveAddr = address(_tokenToGive);
+        tokenToAcceptAddr = address(_tokenToAccept);
         start = _start;
         end = _end;
         status = Status.LOCKED;
